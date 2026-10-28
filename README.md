@@ -10,6 +10,8 @@ A React Native e-commerce app built with Expo, TypeScript, Expo Router, and Zust
 - **Checkout:** Delivery address form with validation, Standard / Express delivery, UPI / Card / Cash on delivery (demo — no real payment), order summary, order success screen with order ID and estimated delivery
 - **Wishlist:** Heart toggle on every product card, saved with AsyncStorage, dedicated Wishlist tab
 - **My Orders:** Orders created at checkout, listed in Profile with date, items, payment method and total, pull-to-refresh
+- **Bottom tab navigation:** Floating rounded tab bar with an active pill, filled icons when selected, and count badges for Cart and Wishlist
+- **Product cards:** Rating badge on the photo, quick-add (+) button, and a wishlist heart on every card
 
 ## Tech stack
 

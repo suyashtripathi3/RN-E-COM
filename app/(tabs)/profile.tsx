@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm, textAlign: 'center' },
   emptyTitle: { fontSize: 18, fontWeight: '700' },
   header: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, paddingHorizontal: spacing.lg },
-  list: { padding: spacing.lg },
+  list: { padding: spacing.lg, paddingBottom: 110 },
   name: { fontSize: 20, fontWeight: '800' },
   orderCard: {
     backgroundColor: colors.card,

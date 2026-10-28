@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   image: { borderRadius: radius.md, height: 72, width: 72 },
   info: { flex: 1 },
   lineTotal: { fontSize: 15, fontWeight: '800' },
-  list: { padding: spacing.lg },
+  list: { padding: spacing.lg, paddingBottom: spacing.md },
   name: { fontSize: 15, fontWeight: '700' },
   price: { color: colors.primary, fontSize: 14, fontWeight: '700', marginTop: 2 },
   primaryButton: {
@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.border,
     borderTopWidth: 1,
     padding: spacing.lg,
+    paddingBottom: 104,
   },
   summaryLabel: { color: colors.muted, fontSize: 14 },
   summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.sm },

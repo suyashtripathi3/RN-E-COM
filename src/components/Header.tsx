@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, spacing } from '@/theme';
+import { colors, radius, spacing } from '@/theme';
 
 type Props = {
   subtitle?: string;
@@ -9,14 +9,29 @@ type Props = {
 export default function Header({ subtitle, title }: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+      <View style={styles.logo}>
+        <Text style={styles.logoText}>R</Text>
+      </View>
+      <View style={styles.text}>
+        <Text style={styles.title}>{title}</Text>
+        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: spacing.lg, paddingTop: 56 },
-  subtitle: { color: colors.muted, fontSize: 14, marginTop: 2 },
-  title: { color: colors.text, fontSize: 28, fontWeight: '800' },
+  container: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, paddingHorizontal: spacing.lg, paddingTop: 56 },
+  logo: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    height: 40,
+    justifyContent: 'center',
+    width: 40,
+  },
+  logoText: { color: '#fff', fontSize: 22, fontWeight: '900' },
+  subtitle: { color: colors.muted, fontSize: 13, marginTop: 1 },
+  text: { flex: 1 },
+  title: { color: colors.text, fontSize: 26, fontWeight: '900', letterSpacing: -0.5 },
 });

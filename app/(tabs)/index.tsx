@@ -49,19 +49,27 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Header title="RN-E-COM" subtitle="Shop smart, live better" />
       <View style={styles.hero}>
+        <View style={styles.heroCircle} />
+        <Text style={styles.heroTag}>LIMITED OFFER</Text>
         <Text style={styles.heroTitle}>New season, new picks</Text>
         <Text style={styles.heroSubtitle}>Up to 40% off on top products this week.</Text>
+        <TouchableOpacity style={styles.heroButton} onPress={clearFilters}>
+          <Text style={styles.heroButtonText}>Shop now →</Text>
+        </TouchableOpacity>
       </View>
 
-      <TextInput
-        style={styles.search}
-        placeholder="Search products…"
-        placeholderTextColor={colors.muted}
-        value={query}
-        onChangeText={setQuery}
-        clearButtonMode="while-editing"
-        returnKeyType="search"
-      />
+      <View style={styles.searchWrap}>
+        <Text style={styles.searchIcon}>⌕</Text>
+        <TextInput
+          style={styles.search}
+          placeholder="Search products…"
+          placeholderTextColor={colors.muted}
+          value={query}
+          onChangeText={setQuery}
+          clearButtonMode="while-editing"
+          returnKeyType="search"
+        />
+      </View>
 
       <ScrollView
         horizontal
@@ -163,10 +171,14 @@ const styles = StyleSheet.create({
   empty: { alignItems: 'center', flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
   emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm, textAlign: 'center' },
   emptyTitle: { fontSize: 17, fontWeight: '700' },
-  hero: { backgroundColor: colors.primary, borderRadius: 16, marginHorizontal: spacing.lg, marginTop: spacing.md, padding: spacing.lg },
+  hero: { backgroundColor: colors.primary, borderRadius: radius.xl, marginHorizontal: spacing.lg, marginTop: spacing.md, overflow: 'hidden', padding: spacing.lg },
+  heroButton: { alignSelf: 'flex-start', backgroundColor: '#fff', borderRadius: radius.pill, marginTop: spacing.md, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
+  heroButtonText: { color: colors.primary, fontSize: 13, fontWeight: '800' },
+  heroCircle: { backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 100, height: 160, position: 'absolute', right: -40, top: -60, width: 160 },
   heroSubtitle: { color: '#E0E7FF', fontSize: 14, marginTop: 4 },
-  heroTitle: { color: '#fff', fontSize: 22, fontWeight: '800' },
-  list: { paddingBottom: spacing.xl, paddingHorizontal: spacing.lg },
+  heroTag: { color: '#C7D2FE', fontSize: 11, fontWeight: '800', letterSpacing: 1.5 },
+  heroTitle: { color: '#fff', fontSize: 22, fontWeight: '800', marginTop: 4 },
+  list: { paddingBottom: 110, paddingHorizontal: spacing.lg },
   listHeader: {
     alignItems: 'baseline',
     flexDirection: 'row',
@@ -176,16 +188,19 @@ const styles = StyleSheet.create({
   },
   resultCount: { color: colors.muted, fontSize: 13, fontWeight: '600' },
   row: { gap: spacing.md, justifyContent: 'space-between' },
-  search: {
+  search: { flex: 1, fontSize: 15, paddingVertical: spacing.sm },
+  searchIcon: { color: colors.muted, fontSize: 20, marginRight: spacing.sm },
+  searchWrap: {
+    alignItems: 'center',
     backgroundColor: colors.card,
     borderColor: colors.border,
-    borderRadius: radius.md,
+    borderRadius: radius.pill,
     borderWidth: 1,
-    fontSize: 15,
+    flexDirection: 'row',
     marginHorizontal: spacing.lg,
     marginTop: spacing.md,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    ...{ elevation: 2, shadowColor: '#0F172A', shadowOffset: { height: 1, width: 0 }, shadowOpacity: 0.06, shadowRadius: 6 },
   },
   sectionTitle: { fontSize: 18, fontWeight: '700' },
   sortButton: {

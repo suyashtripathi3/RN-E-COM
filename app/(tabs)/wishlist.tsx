@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   empty: { alignItems: 'center', backgroundColor: colors.background, flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
   emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm, textAlign: 'center' },
   emptyTitle: { fontSize: 20, fontWeight: '800' },
-  list: { paddingBottom: spacing.xl, paddingHorizontal: spacing.lg },
+  list: { paddingBottom: 110, paddingHorizontal: spacing.lg },
   primaryButton: {
     backgroundColor: colors.primary,
     borderRadius: 12,
