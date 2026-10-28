@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import Header from '@/components/Header';
 import ProductCard from '@/components/ProductCard';
 import { categories, products } from '@/data/products';
@@ -14,6 +15,7 @@ const sortOptions: { key: SortKey; label: string }[] = [
 ];
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All');
   const [sort, setSort] = useState<SortKey>('popular');
@@ -116,7 +118,9 @@ export default function HomeScreen() {
           numColumns={2}
           columnWrapperStyle={styles.row}
           contentContainerStyle={styles.list}
-          renderItem={({ item }) => <ProductCard product={item} />}
+          renderItem={({ item }) => (
+            <ProductCard product={item} onPress={(selected) => router.push(`/product/${selected.id}`)} />
+          )}
           showsVerticalScrollIndicator={false}
         />
       )}
