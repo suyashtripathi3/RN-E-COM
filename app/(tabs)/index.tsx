@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
-import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Header from '@/components/Header';
 import ProductCard from '@/components/ProductCard';
-import { categories, products } from '@/data/products';
+import { categories, formatPrice, products } from '@/data/products';
+import { useRecentlyViewedStore } from '@/store/recentlyViewed';
 import { colors, radius, spacing } from '@/theme';
 
 type SortKey = 'popular' | 'priceAsc' | 'priceDesc';
@@ -20,6 +21,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [category, setCategory] = useState('All');
   const [sort, setSort] = useState<SortKey>('popular');
+  const recentIds = useRecentlyViewedStore((state) => state.ids);
 
   const visibleProducts = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -31,11 +33,18 @@ export default function HomeScreen() {
     return [...filtered].sort((a, b) => {
       if (sort === 'priceAsc') return a.price - b.price;
       if (sort === 'priceDesc') return b.price - a.price;
-      // Popularity: highest rating first, reviews as the tiebreak.
       if (b.rating !== a.rating) return b.rating - a.rating;
       return b.reviews - a.reviews;
     });
   }, [query, category, sort]);
+
+  const recentProducts = useMemo(
+    () =>
+      recentIds
+        .map((id) => products.find((p) => p.id === id))
+        .filter((p): p is (typeof products)[number] => Boolean(p)),
+    [recentIds],
+  );
 
   const hasActiveFilters = query.trim() !== '' || category !== 'All' || sort !== 'popular';
 
@@ -45,8 +54,8 @@ export default function HomeScreen() {
     setSort('popular');
   };
 
-  return (
-    <View style={styles.container}>
+  const header = (
+    <View>
       <Header title="RN-E-COM" subtitle="Shop smart, live better" />
       <View style={styles.hero}>
         <View style={styles.heroCircle} />
@@ -71,11 +80,7 @@ export default function HomeScreen() {
         />
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.chips}
-      >
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
         {categories.map((item) => (
           <TouchableOpacity
             key={item}
@@ -87,10 +92,29 @@ export default function HomeScreen() {
         ))}
       </ScrollView>
 
+      {recentProducts.length > 0 && (
+        <View style={styles.recentSection}>
+          <Text style={styles.sectionTitle}>Recently viewed</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.recentList}>
+            {recentProducts.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.recentCard}
+                onPress={() => router.push(`/product/${item.id}`)}
+              >
+                <Image source={{ uri: item.image }} style={styles.recentImage} />
+                <Text style={styles.recentName} numberOfLines={1}>
+                  {item.name}
+                </Text>
+                <Text style={styles.recentPrice}>{formatPrice(item.price)}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
       <View style={styles.listHeader}>
-        <Text style={styles.sectionTitle}>
-          {category === 'All' ? 'All products' : category}
-        </Text>
+        <Text style={styles.sectionTitle}>{category === 'All' ? 'All products' : category}</Text>
         <Text style={styles.resultCount}>
           {visibleProducts.length} {visibleProducts.length === 1 ? 'product' : 'products'}
         </Text>
@@ -103,14 +127,17 @@ export default function HomeScreen() {
             style={[styles.sortButton, sort === option.key && styles.sortButtonActive]}
             onPress={() => setSort(option.key)}
           >
-            <Text style={[styles.sortText, sort === option.key && styles.sortTextActive]}>
-              {option.label}
-            </Text>
+            <Text style={[styles.sortText, sort === option.key && styles.sortTextActive]}>{option.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
+    </View>
+  );
 
-      {visibleProducts.length === 0 ? (
+  if (visibleProducts.length === 0) {
+    return (
+      <View style={styles.container}>
+        {header}
         <View style={styles.empty}>
           <Text style={styles.emptyTitle}>No products match your search</Text>
           <Text style={styles.emptySubtitle}>Try a different search term or category.</Text>
@@ -120,28 +147,33 @@ export default function HomeScreen() {
             </TouchableOpacity>
           )}
         </View>
-      ) : (
-        <FlatList
-          data={visibleProducts}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
-          contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => {
-                setRefreshing(true);
-                setTimeout(() => setRefreshing(false), 700);
-              }}
-            />
-          }
-          renderItem={({ item }) => (
-            <ProductCard product={item} onPress={(selected) => router.push(`/product/${selected.id}`)} />
-          )}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={visibleProducts}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
+        contentContainerStyle={styles.list}
+        ListHeaderComponent={header}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              setRefreshing(true);
+              setTimeout(() => setRefreshing(false), 700);
+            }}
+          />
+        }
+        renderItem={({ index, item }) => (
+          <ProductCard index={index} product={item} onPress={(selected) => router.push(`/product/${selected.id}`)} />
+        )}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 }
@@ -186,6 +218,12 @@ const styles = StyleSheet.create({
     marginHorizontal: spacing.lg,
     marginTop: spacing.sm,
   },
+  recentCard: { backgroundColor: colors.card, borderColor: colors.border, borderRadius: radius.lg, borderWidth: 1, padding: spacing.sm, width: 120 },
+  recentImage: { borderRadius: radius.md, height: 80, width: '100%' },
+  recentList: { gap: spacing.md, paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
+  recentName: { fontSize: 12, fontWeight: '700', marginTop: spacing.sm },
+  recentPrice: { color: colors.primary, fontSize: 12, fontWeight: '800', marginTop: 2 },
+  recentSection: { marginTop: spacing.md },
   resultCount: { color: colors.muted, fontSize: 13, fontWeight: '600' },
   row: { gap: spacing.md, justifyContent: 'space-between' },
   search: { flex: 1, fontSize: 15, paddingVertical: spacing.sm },
@@ -200,9 +238,13 @@ const styles = StyleSheet.create({
     marginHorizontal: spacing.lg,
     marginTop: spacing.md,
     paddingHorizontal: spacing.md,
-    ...{ elevation: 2, shadowColor: '#0F172A', shadowOffset: { height: 1, width: 0 }, shadowOpacity: 0.06, shadowRadius: 6 },
+    elevation: 2,
+    shadowColor: '#0F172A',
+    shadowOffset: { height: 1, width: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
   },
-  sectionTitle: { fontSize: 18, fontWeight: '700' },
+  sectionTitle: { fontSize: 18, fontWeight: '700', marginHorizontal: spacing.lg },
   sortButton: {
     backgroundColor: colors.card,
     borderColor: colors.border,

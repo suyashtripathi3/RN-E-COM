@@ -34,8 +34,8 @@ export default function WishlistScreen() {
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <ProductCard product={item} onPress={(selected) => router.push(`/product/${selected.id}`)} />
+        renderItem={({ index, item }) => (
+          <ProductCard index={index} product={item} onPress={(selected) => router.push(`/product/${selected.id}`)} />
         )}
       />
     </View>

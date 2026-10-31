@@ -86,9 +86,16 @@ export default function CartScreen() {
           <Text style={styles.summaryLabel}>Delivery {fee === 0 ? '(Free)' : ''}</Text>
           <Text style={styles.summaryValue}>{fee === 0 ? 'Free' : formatPrice(fee)}</Text>
         </View>
-        <Text style={styles.freeNote}>
-          {subtotal >= 999 ? 'You have free delivery on this order.' : 'Add more to get free delivery over ₹999.'}
-        </Text>
+        <View style={styles.progressWrap}>
+          <View style={styles.progressTrack}>
+            <View style={[styles.progressFill, { width: `${Math.min(100, Math.round((subtotal / 999) * 100))}%` }]} />
+          </View>
+          <Text style={styles.freeNote}>
+            {subtotal >= 999
+              ? 'You have unlocked FREE delivery.'
+              : `${formatPrice(999 - subtotal)} away from FREE delivery`}
+          </Text>
+        </View>
         <View style={[styles.summaryRow, styles.totalRow]}>
           <Text style={styles.totalLabel}>Total</Text>
           <Text style={styles.totalValue}>{formatPrice(total)}</Text>
@@ -116,6 +123,9 @@ const styles = StyleSheet.create({
   emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm, textAlign: 'center' },
   emptyTitle: { fontSize: 20, fontWeight: '800' },
   freeNote: { color: colors.muted, fontSize: 12, marginTop: spacing.sm },
+  progressFill: { backgroundColor: colors.success, borderRadius: 4, height: 8 },
+  progressTrack: { backgroundColor: colors.border, borderRadius: 4, height: 8, marginTop: spacing.md, overflow: 'hidden' },
+  progressWrap: { marginTop: spacing.sm },
   header: { flexDirection: 'row', alignItems: 'baseline', gap: spacing.sm, paddingHorizontal: spacing.lg, paddingTop: 56 },
   image: { borderRadius: radius.md, height: 72, width: 72 },
   info: { flex: 1 },

@@ -11,6 +11,7 @@ A React Native e-commerce app built with Expo, TypeScript, Expo Router, and Zust
 - **Wishlist:** Heart toggle on every product card, saved with AsyncStorage, dedicated Wishlist tab
 - **My Orders:** Orders created at checkout, listed in Profile with date, items, payment method and total, pull-to-refresh
 - **Bottom tab navigation:** Floating rounded tab bar with an active pill, filled icons when selected, and count badges for Cart and Wishlist
+- **Premium touches (2026-10-30):** Animated product cards that fade and slide in, a heart-pop animation, discount badges with strikethrough original prices, a Recently Viewed rail on Home, and a free-delivery progress bar in Cart
 - **Product cards:** Rating badge on the photo, quick-add (+) button, and a wishlist heart on every card
 
 ## Tech stack
@@ -88,3 +89,7 @@ eas.json               # EAS Build profiles (preview = APK)
 - **Day 6 — Wishlist, orders & polish:** Wishlist, My Orders, cart badge, pull-to-refresh
 - **Day 7 — Portfolio-ready:** Final polish, README, checks
 - **Fix — SDK 58:** Upgraded from SDK 54 to SDK 58 to match Expo Go
+
+## Daily improvements
+
+From 2026-10-30, this project gets a small, real improvement every day — a new feature, a UI polish, or a useful fix — pushed to GitHub daily. The roadmap for upcoming days includes dark mode, coupon codes, order tracking, product reviews, search history, and price filters, picked one at a time so each day's change stays focused and verified.

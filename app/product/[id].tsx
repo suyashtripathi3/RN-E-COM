@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import ProductCard from '@/components/ProductCard';
-import { formatPrice, products } from '@/data/products';
+import { discountPercent, formatPrice, products } from '@/data/products';
+import { useRecentlyViewedStore } from '@/store/recentlyViewed';
 import { useCartStore } from '@/store/cart';
 import { colors, radius, spacing } from '@/theme';
 
@@ -10,6 +11,7 @@ export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const product = products.find((item) => item.id === id);
   const addToCart = useCartStore((state) => state.add);
+  const addRecent = useRecentlyViewedStore((state) => state.add);
 
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
@@ -22,7 +24,8 @@ export default function ProductDetailScreen() {
     setSelectedColor(undefined);
     setSelectedSize(undefined);
     setAdded(false);
-  }, [id]);
+    if (id) addRecent(id);
+  }, [id, addRecent]);
 
   if (!product) {
     return (
@@ -60,7 +63,17 @@ export default function ProductDetailScreen() {
         <Text style={styles.rating}>
           ★ {product.rating} · {product.reviews} reviews
         </Text>
-        <Text style={styles.price}>{formatPrice(product.price)}</Text>
+        <View style={styles.priceRow}>
+          <Text style={styles.price}>{formatPrice(product.price)}</Text>
+          {product.originalPrice && (
+            <Text style={styles.originalPrice}>{formatPrice(product.originalPrice)}</Text>
+          )}
+          {discountPercent(product) > 0 && (
+            <View style={styles.discountBadge}>
+              <Text style={styles.discountBadgeText}>-{discountPercent(product)}% OFF</Text>
+            </View>
+          )}
+        </View>
 
         <Text style={styles.sectionTitle}>Description</Text>
         <Text style={styles.description}>{product.description}</Text>
@@ -198,7 +211,11 @@ const styles = StyleSheet.create({
   optionText: { color: colors.text, fontSize: 13, fontWeight: '600' },
   optionTextActive: { color: '#fff' },
   optionsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.sm },
+  discountBadge: { backgroundColor: colors.dangerSoft, borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: 4 },
+  discountBadgeText: { color: colors.danger, fontSize: 12, fontWeight: '800' },
+  originalPrice: { color: colors.muted, fontSize: 18, textDecorationLine: 'line-through' },
   price: { color: colors.primary, fontSize: 24, fontWeight: '800', marginTop: spacing.sm },
+  priceRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
   quantityButton: {
     alignItems: 'center',
     backgroundColor: colors.card,
