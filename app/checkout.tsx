@@ -4,7 +4,8 @@ import { router } from 'expo-router';
 import { formatPrice } from '@/data/products';
 import { cartSubtotal, deliveryFee, useCartStore } from '@/store/cart';
 import { useOrdersStore } from '@/store/orders';
-import { colors, radius, spacing } from '@/theme';
+import { radius, spacing } from '@/theme';
+import { useThemeColors } from '@/store/theme';
 
 const deliveryOptions = [
   { id: 'standard', label: 'Standard delivery · 3–5 days', price: 0 },
@@ -14,6 +15,69 @@ const deliveryOptions = [
 const paymentOptions = ['UPI', 'Card', 'Cash on delivery'];
 
 export default function CheckoutScreen() {
+  const colors = useThemeColors();
+  const styles = StyleSheet.create({
+  backLink: { color: colors.primary, fontSize: 15, fontWeight: '700' },
+  container: { backgroundColor: colors.background, flex: 1 },
+  content: { padding: spacing.lg, paddingBottom: spacing.xl, paddingTop: 56 },
+  empty: { alignItems: 'center', backgroundColor: colors.background, flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
+  emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm },
+  emptyTitle: { color: colors.text, fontSize: 20, fontWeight: '800' },
+  half: { flex: 1 },
+  input: {
+    backgroundColor: colors.card,
+    color: colors.text,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    fontSize: 15,
+    marginTop: spacing.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  mockNote: { color: colors.muted, fontSize: 12, marginTop: spacing.sm },
+  option: {
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: spacing.sm,
+    padding: spacing.md,
+  },
+  optionActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  optionText: { color: colors.text, fontSize: 14, fontWeight: '600' },
+  optionTextActive: { color: '#fff' },
+  optionsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.sm },
+  placeButton: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    marginTop: spacing.lg,
+    paddingVertical: spacing.md,
+  },
+  placeButtonText: { color: '#fff', fontSize: 16, fontWeight: '800' },
+  primaryButton: {
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  primaryButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
+  row: { flexDirection: 'row', gap: spacing.sm },
+  sectionTitle: { color: colors.text, fontSize: 16, fontWeight: '800', marginTop: spacing.lg },
+  summary: { backgroundColor: colors.card, borderColor: colors.border, borderRadius: radius.lg, borderWidth: 1, marginTop: spacing.sm, padding: spacing.md },
+  summaryLabel: { color: colors.muted, fontSize: 14, flex: 1 },
+  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.sm },
+  summaryValue: { color: colors.text, fontSize: 14, fontWeight: '700' },
+  title: { color: colors.text, fontSize: 24, fontWeight: '800', marginTop: spacing.sm },
+  totalLabel: { color: colors.text, fontSize: 16, fontWeight: '800' },
+  totalRow: { borderTopColor: colors.border, borderTopWidth: 1, marginTop: spacing.md, paddingTop: spacing.md },
+  totalValue: { color: colors.primary, fontSize: 18, fontWeight: '800' },
+});
   const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clear);
   const addOrder = useOrdersStore((state) => state.addOrder);
@@ -168,65 +232,3 @@ export default function CheckoutScreen() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  backLink: { color: colors.primary, fontSize: 15, fontWeight: '700' },
-  container: { backgroundColor: colors.background, flex: 1 },
-  content: { padding: spacing.lg, paddingBottom: spacing.xl, paddingTop: 56 },
-  empty: { alignItems: 'center', backgroundColor: colors.background, flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
-  emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm },
-  emptyTitle: { fontSize: 20, fontWeight: '800' },
-  half: { flex: 1 },
-  input: {
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    fontSize: 15,
-    marginTop: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  mockNote: { color: colors.muted, fontSize: 12, marginTop: spacing.sm },
-  option: {
-    alignItems: 'center',
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: spacing.sm,
-    padding: spacing.md,
-  },
-  optionActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  optionText: { fontSize: 14, fontWeight: '600' },
-  optionTextActive: { color: '#fff' },
-  optionsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.sm },
-  placeButton: {
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: radius.md,
-    marginTop: spacing.lg,
-    paddingVertical: spacing.md,
-  },
-  placeButtonText: { color: '#fff', fontSize: 16, fontWeight: '800' },
-  primaryButton: {
-    backgroundColor: colors.primary,
-    borderRadius: radius.md,
-    marginTop: spacing.lg,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  primaryButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  row: { flexDirection: 'row', gap: spacing.sm },
-  sectionTitle: { fontSize: 16, fontWeight: '800', marginTop: spacing.lg },
-  summary: { backgroundColor: colors.card, borderColor: colors.border, borderRadius: radius.lg, borderWidth: 1, marginTop: spacing.sm, padding: spacing.md },
-  summaryLabel: { color: colors.muted, fontSize: 14, flex: 1 },
-  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.sm },
-  summaryValue: { fontSize: 14, fontWeight: '700' },
-  title: { fontSize: 24, fontWeight: '800', marginTop: spacing.sm },
-  totalLabel: { fontSize: 16, fontWeight: '800' },
-  totalRow: { borderTopColor: colors.border, borderTopWidth: 1, marginTop: spacing.md, paddingTop: spacing.md },
-  totalValue: { color: colors.primary, fontSize: 18, fontWeight: '800' },
-});

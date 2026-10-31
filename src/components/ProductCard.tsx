@@ -3,7 +3,8 @@ import { Animated, Image, StyleSheet, Text, TouchableOpacity, View } from 'react
 import { discountPercent, formatPrice, type Product } from '@/data/products';
 import { useCartStore } from '@/store/cart';
 import { useWishlistStore } from '@/store/wishlist';
-import { colors, radius, shadows, spacing } from '@/theme';
+import { radius, shadows, spacing } from '@/theme';
+import { useThemeColors } from '@/store/theme';
 
 type Props = {
   index?: number;
@@ -12,6 +13,71 @@ type Props = {
 };
 
 export default function ProductCard({ index = 0, onPress, product }: Props) {
+  const colors = useThemeColors();
+  const styles = StyleSheet.create({
+  addButton: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: radius.pill,
+    height: 32,
+    justifyContent: 'center',
+    width: 32,
+  },
+  addButtonAdded: { backgroundColor: colors.success },
+  addButtonText: { color: '#fff', fontSize: 18, fontWeight: '800', lineHeight: 20 },
+  animated: { flex: 1 },
+  body: { padding: spacing.md },
+  card: {
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    flex: 1,
+    marginTop: spacing.md,
+    overflow: 'hidden',
+    ...shadows.card,
+  },
+  category: { color: colors.muted, fontSize: 11, fontWeight: '700', letterSpacing: 0.5, textTransform: 'uppercase' },
+  discountBadge: {
+    backgroundColor: colors.danger,
+    borderRadius: radius.pill,
+    left: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    position: 'absolute',
+    top: spacing.sm,
+  },
+  discountBadgeText: { color: '#fff', fontSize: 11, fontWeight: '800' },
+  footer: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.sm },
+  heart: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderRadius: 18,
+    height: 36,
+    justifyContent: 'center',
+    width: 36,
+  },
+  heartWrap: { position: 'absolute', right: spacing.sm, top: spacing.sm },
+  heartActive: { backgroundColor: colors.dangerSoft },
+  heartText: { color: colors.muted, fontSize: 20, lineHeight: 22 },
+  heartTextActive: { color: colors.danger },
+  image: { aspectRatio: 1, width: '100%' },
+  imageWrap: { position: 'relative' },
+  name: { color: colors.text, fontSize: 14, fontWeight: '700', marginTop: 4, minHeight: 36 },
+  originalPrice: { color: colors.muted, fontSize: 12, textDecorationLine: 'line-through' },
+  price: { color: colors.primary, fontSize: 16, fontWeight: '800' },
+  ratingBadge: {
+    backgroundColor: 'rgba(15,23,42,0.85)',
+    borderRadius: radius.pill,
+    bottom: spacing.sm,
+    left: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    position: 'absolute',
+  },
+  ratingBadgeText: { color: '#fff', fontSize: 11, fontWeight: '800' },
+  reviews: { color: colors.muted, fontSize: 12, fontWeight: '600', marginTop: 2 },
+});
   const wished = useWishlistStore((state) => state.ids.includes(product.id));
   const toggleWishlist = useWishlistStore((state) => state.toggle);
   const addToCart = useCartStore((state) => state.add);
@@ -93,68 +159,3 @@ export default function ProductCard({ index = 0, onPress, product }: Props) {
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  addButton: {
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: radius.pill,
-    height: 32,
-    justifyContent: 'center',
-    width: 32,
-  },
-  addButtonAdded: { backgroundColor: colors.success },
-  addButtonText: { color: '#fff', fontSize: 18, fontWeight: '800', lineHeight: 20 },
-  animated: { flex: 1 },
-  body: { padding: spacing.md },
-  card: {
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    flex: 1,
-    marginTop: spacing.md,
-    overflow: 'hidden',
-    ...shadows.card,
-  },
-  category: { color: colors.muted, fontSize: 11, fontWeight: '700', letterSpacing: 0.5, textTransform: 'uppercase' },
-  discountBadge: {
-    backgroundColor: colors.danger,
-    borderRadius: radius.pill,
-    left: spacing.sm,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    position: 'absolute',
-    top: spacing.sm,
-  },
-  discountBadgeText: { color: '#fff', fontSize: 11, fontWeight: '800' },
-  footer: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.sm },
-  heart: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    borderRadius: 18,
-    height: 36,
-    justifyContent: 'center',
-    width: 36,
-  },
-  heartWrap: { position: 'absolute', right: spacing.sm, top: spacing.sm },
-  heartActive: { backgroundColor: colors.dangerSoft },
-  heartText: { color: colors.muted, fontSize: 20, lineHeight: 22 },
-  heartTextActive: { color: colors.danger },
-  image: { aspectRatio: 1, width: '100%' },
-  imageWrap: { position: 'relative' },
-  name: { fontSize: 14, fontWeight: '700', marginTop: 4, minHeight: 36 },
-  originalPrice: { color: colors.muted, fontSize: 12, textDecorationLine: 'line-through' },
-  price: { color: colors.primary, fontSize: 16, fontWeight: '800' },
-  ratingBadge: {
-    backgroundColor: 'rgba(15,23,42,0.85)',
-    borderRadius: radius.pill,
-    bottom: spacing.sm,
-    left: spacing.sm,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    position: 'absolute',
-  },
-  ratingBadgeText: { color: '#fff', fontSize: 11, fontWeight: '800' },
-  reviews: { color: colors.muted, fontSize: 12, fontWeight: '600', marginTop: 2 },
-});

@@ -3,9 +3,29 @@ import { router } from 'expo-router';
 import ProductCard from '@/components/ProductCard';
 import { products } from '@/data/products';
 import { useWishlistStore } from '@/store/wishlist';
-import { colors, spacing } from '@/theme';
+import { spacing } from '@/theme';
+import { useThemeColors } from '@/store/theme';
 
 export default function WishlistScreen() {
+  const colors = useThemeColors();
+  const styles = StyleSheet.create({
+  container: { backgroundColor: colors.background, flex: 1, paddingTop: 56 },
+  empty: { alignItems: 'center', backgroundColor: colors.background, flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
+  emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm, textAlign: 'center' },
+  emptyTitle: { color: colors.text, fontSize: 20, fontWeight: '800' },
+  list: { paddingBottom: 110, paddingHorizontal: spacing.lg },
+  primaryButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  primaryButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
+  row: { gap: spacing.md, justifyContent: 'space-between' },
+  subtitle: { color: colors.muted, fontSize: 14, marginHorizontal: spacing.lg, marginTop: 4 },
+  title: { color: colors.text, fontSize: 24, fontWeight: '800', marginHorizontal: spacing.lg },
+});
   const ids = useWishlistStore((state) => state.ids);
   const wished = products.filter((p) => ids.includes(p.id));
 
@@ -41,22 +61,3 @@ export default function WishlistScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { backgroundColor: colors.background, flex: 1, paddingTop: 56 },
-  empty: { alignItems: 'center', backgroundColor: colors.background, flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
-  emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm, textAlign: 'center' },
-  emptyTitle: { fontSize: 20, fontWeight: '800' },
-  list: { paddingBottom: 110, paddingHorizontal: spacing.lg },
-  primaryButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 12,
-    marginTop: spacing.lg,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  primaryButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  row: { gap: spacing.md, justifyContent: 'space-between' },
-  subtitle: { color: colors.muted, fontSize: 14, marginHorizontal: spacing.lg, marginTop: 4 },
-  title: { fontSize: 24, fontWeight: '800', marginHorizontal: spacing.lg },
-});

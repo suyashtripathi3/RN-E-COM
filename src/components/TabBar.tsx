@@ -3,7 +3,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { cartCount, useCartStore } from '@/store/cart';
 import { useWishlistStore } from '@/store/wishlist';
-import { colors, radius, shadows, spacing } from '@/theme';
+import { radius, shadows, spacing } from '@/theme';
+import { useThemeColors } from '@/store/theme';
 
 type IconName = 'home' | 'home-outline' | 'cart' | 'cart-outline' | 'heart' | 'heart-outline' | 'person' | 'person-outline';
 
@@ -18,6 +19,49 @@ const icons: Record<string, { active: IconName; inactive: IconName }> = {
 // custom tabBar. The prop type varies by router version, so this component
 // takes them loosely and reads only what it needs.
 export default function TabBar({ descriptors, emitter, navigateToTab, state }: any) {
+  const colors = useThemeColors();
+  const styles = StyleSheet.create({
+  badge: {
+    alignItems: 'center',
+    backgroundColor: colors.danger,
+    borderColor: '#fff',
+    borderRadius: 9,
+    borderWidth: 1.5,
+    height: 18,
+    justifyContent: 'center',
+    minWidth: 18,
+    paddingHorizontal: 4,
+    position: 'absolute',
+    right: -6,
+    top: -6,
+  },
+  badgeText: { color: '#fff', fontSize: 10, fontWeight: '800' },
+  container: {
+    alignSelf: 'center',
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: radius.xl + 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    height: 68,
+    left: spacing.lg,
+    paddingHorizontal: spacing.sm,
+    position: 'absolute',
+    right: spacing.lg,
+    ...shadows.tabBar,
+  },
+  iconWrap: {
+    alignItems: 'center',
+    borderRadius: radius.pill,
+    height: 34,
+    justifyContent: 'center',
+    width: 52,
+  },
+  iconWrapActive: { backgroundColor: colors.primarySoft },
+  label: { color: colors.muted, fontSize: 11, fontWeight: '600', marginTop: 2 },
+  labelActive: { color: colors.primary, fontWeight: '800' },
+  tab: { alignItems: 'center', flex: 1, justifyContent: 'center', paddingVertical: 6 },
+});
   const insets = useSafeAreaInsets();
   const cartItems = useCartStore((s) => s.items);
   const wishlistIds = useWishlistStore((s) => s.ids);
@@ -81,46 +125,3 @@ export default function TabBar({ descriptors, emitter, navigateToTab, state }: a
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  badge: {
-    alignItems: 'center',
-    backgroundColor: colors.danger,
-    borderColor: '#fff',
-    borderRadius: 9,
-    borderWidth: 1.5,
-    height: 18,
-    justifyContent: 'center',
-    minWidth: 18,
-    paddingHorizontal: 4,
-    position: 'absolute',
-    right: -6,
-    top: -6,
-  },
-  badgeText: { color: '#fff', fontSize: 10, fontWeight: '800' },
-  container: {
-    alignSelf: 'center',
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: radius.xl + 8,
-    borderWidth: 1,
-    flexDirection: 'row',
-    height: 68,
-    left: spacing.lg,
-    paddingHorizontal: spacing.sm,
-    position: 'absolute',
-    right: spacing.lg,
-    ...shadows.tabBar,
-  },
-  iconWrap: {
-    alignItems: 'center',
-    borderRadius: radius.pill,
-    height: 34,
-    justifyContent: 'center',
-    width: 52,
-  },
-  iconWrapActive: { backgroundColor: colors.primarySoft },
-  label: { color: colors.muted, fontSize: 11, fontWeight: '600', marginTop: 2 },
-  labelActive: { color: colors.primary, fontWeight: '800' },
-  tab: { alignItems: 'center', flex: 1, justifyContent: 'center', paddingVertical: 6 },
-});

@@ -3,10 +3,71 @@ import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } fr
 import { router } from 'expo-router';
 import { formatPrice } from '@/data/products';
 import { useOrdersStore } from '@/store/orders';
-import { colors, radius, spacing } from '@/theme';
+import { radius, spacing } from '@/theme';
+import { useThemeColors, useThemeStore } from '@/store/theme';
 
 export default function ProfileScreen() {
+  const colors = useThemeColors();
+  const styles = StyleSheet.create({
+  avatar: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: 28,
+    height: 56,
+    justifyContent: 'center',
+    width: 56,
+  },
+  avatarText: { color: '#fff', fontSize: 18, fontWeight: '800' },
+  container: { backgroundColor: colors.background, flex: 1, paddingTop: 56 },
+  email: { color: colors.muted, fontSize: 13, marginTop: 2 },
+  empty: { alignItems: 'center', flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
+  emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm, textAlign: 'center' },
+  emptyTitle: { color: colors.text, fontSize: 18, fontWeight: '700' },
+  header: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, paddingHorizontal: spacing.lg },
+  list: { padding: spacing.lg, paddingBottom: 110 },
+  name: { color: colors.text, fontSize: 20, fontWeight: '800' },
+  orderCard: {
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    marginBottom: spacing.md,
+    padding: spacing.md,
+  },
+  orderHeader: { flexDirection: 'row', justifyContent: 'space-between' },
+  orderId: { color: colors.text, fontSize: 15, fontWeight: '800' },
+  orderMeta: { color: colors.muted, fontSize: 13, marginTop: spacing.sm },
+  orderTotal: { color: colors.primary, fontSize: 16, fontWeight: '800', marginTop: spacing.sm },
+  primaryButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  primaryButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
+  appearanceCard: {
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.sm,
+    padding: spacing.md,
+  },
+  appearanceHint: { color: colors.muted, fontSize: 12, marginTop: 2 },
+  appearanceLabel: { color: colors.text, fontSize: 15, fontWeight: '700' },
+  themeToggle: { backgroundColor: colors.primary, borderRadius: radius.pill, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
+  themeToggleText: { color: '#fff', fontSize: 13, fontWeight: '800' },
+  sectionTitle: { color: colors.text, fontSize: 18, fontWeight: '700', marginHorizontal: spacing.lg, marginTop: spacing.xl },
+  status: { color: colors.success, fontSize: 13, fontWeight: '700' },
+});
   const orders = useOrdersStore((state) => state.orders);
+  const mode = useThemeStore((state) => state.mode);
+  const toggleTheme = useThemeStore((state) => state.toggle);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
@@ -24,6 +85,17 @@ export default function ProfileScreen() {
           <Text style={styles.name}>Suyash Tripathi</Text>
           <Text style={styles.email}>suyashtripathi3 · GitHub</Text>
         </View>
+      </View>
+
+      <Text style={styles.sectionTitle}>Appearance</Text>
+      <View style={styles.appearanceCard}>
+        <View>
+          <Text style={styles.appearanceLabel}>{mode === 'dark' ? 'Dark mode' : 'Light mode'}</Text>
+          <Text style={styles.appearanceHint}>Saved on this device, applies across the app.</Text>
+        </View>
+        <TouchableOpacity style={styles.themeToggle} onPress={toggleTheme} accessibilityRole="button">
+          <Text style={styles.themeToggleText}>{mode === 'dark' ? '☀ Light' : '🌙 Dark'}</Text>
+        </TouchableOpacity>
       </View>
 
       <Text style={styles.sectionTitle}>My Orders</Text>
@@ -64,45 +136,3 @@ export default function ProfileScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  avatar: {
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: 28,
-    height: 56,
-    justifyContent: 'center',
-    width: 56,
-  },
-  avatarText: { color: '#fff', fontSize: 18, fontWeight: '800' },
-  container: { backgroundColor: colors.background, flex: 1, paddingTop: 56 },
-  email: { color: colors.muted, fontSize: 13, marginTop: 2 },
-  empty: { alignItems: 'center', flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
-  emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm, textAlign: 'center' },
-  emptyTitle: { fontSize: 18, fontWeight: '700' },
-  header: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, paddingHorizontal: spacing.lg },
-  list: { padding: spacing.lg, paddingBottom: 110 },
-  name: { fontSize: 20, fontWeight: '800' },
-  orderCard: {
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    marginBottom: spacing.md,
-    padding: spacing.md,
-  },
-  orderHeader: { flexDirection: 'row', justifyContent: 'space-between' },
-  orderId: { fontSize: 15, fontWeight: '800' },
-  orderMeta: { color: colors.muted, fontSize: 13, marginTop: spacing.sm },
-  orderTotal: { color: colors.primary, fontSize: 16, fontWeight: '800', marginTop: spacing.sm },
-  primaryButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 12,
-    marginTop: spacing.lg,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  primaryButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  sectionTitle: { fontSize: 18, fontWeight: '700', marginHorizontal: spacing.lg, marginTop: spacing.xl },
-  status: { color: colors.success, fontSize: 13, fontWeight: '700' },
-});

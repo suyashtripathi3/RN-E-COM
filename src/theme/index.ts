@@ -1,4 +1,4 @@
-export const colors = {
+export const lightColors = {
   background: '#F8FAFC',
   border: '#E2E8F0',
   card: '#FFFFFF',
@@ -13,6 +13,28 @@ export const colors = {
   successSoft: '#DCFCE7',
   text: '#0F172A',
 };
+
+export const darkColors = {
+  background: '#0F172A',
+  border: '#334155',
+  card: '#1E293B',
+  danger: '#F87171',
+  dangerSoft: '#450A0A',
+  muted: '#94A3B8',
+  primary: '#818CF8',
+  primaryDark: '#6366F1',
+  primarySoft: '#312E81',
+  rating: '#FBBF24',
+  success: '#34D399',
+  successSoft: '#14532D',
+  text: '#F1F5F9',
+};
+
+export type Palette = typeof lightColors;
+
+// Kept for any static (non-themed) usage; themed components should use
+// useThemeColors() from '@/store/theme' instead so they re-render on toggle.
+export const colors = lightColors;
 
 export const spacing = {
   lg: 16,

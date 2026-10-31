@@ -1,10 +1,12 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useIsDark } from '@/store/theme';
 
 export default function RootLayout() {
+  const isDark = useIsDark();
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="product/[id]" />

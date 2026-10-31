@@ -2,9 +2,59 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { formatPrice } from '@/data/products';
 import { useOrdersStore } from '@/store/orders';
-import { colors, radius, spacing } from '@/theme';
+import { radius, spacing } from '@/theme';
+import { useThemeColors } from '@/store/theme';
 
 export default function OrderSuccessScreen() {
+  const colors = useThemeColors();
+  const styles = StyleSheet.create({
+  bold: { fontWeight: '800' },
+  card: {
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    marginTop: spacing.lg,
+    padding: spacing.lg,
+    width: '100%',
+  },
+  check: {
+    alignSelf: 'center',
+    backgroundColor: colors.success,
+    borderRadius: 40,
+    color: '#fff',
+    fontSize: 36,
+    fontWeight: '800',
+    height: 80,
+    lineHeight: 76,
+    textAlign: 'center',
+    width: 80,
+  },
+  container: { alignItems: 'center', backgroundColor: colors.background, flex: 1, justifyContent: 'center', padding: spacing.xl },
+  primaryButton: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    marginTop: spacing.lg,
+    paddingVertical: spacing.md,
+    width: '100%',
+  },
+  primaryButtonText: { color: '#fff', fontSize: 16, fontWeight: '800' },
+  row: { color: colors.muted, fontSize: 15, marginTop: spacing.sm },
+  secondaryButton: {
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    marginTop: spacing.sm,
+    paddingVertical: spacing.md,
+    width: '100%',
+  },
+  secondaryButtonText: { color: colors.text, fontSize: 15, fontWeight: '700' },
+  subtitle: { color: colors.muted, fontSize: 15, marginTop: spacing.sm, textAlign: 'center' },
+  title: { color: colors.text, fontSize: 24, fontWeight: '800', marginTop: spacing.lg },
+});
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
   const order = useOrdersStore((state) => state.orders.find((o) => o.id === orderId));
 
@@ -54,52 +104,3 @@ export default function OrderSuccessScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  bold: { fontWeight: '800' },
-  card: {
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    marginTop: spacing.lg,
-    padding: spacing.lg,
-    width: '100%',
-  },
-  check: {
-    alignSelf: 'center',
-    backgroundColor: colors.success,
-    borderRadius: 40,
-    color: '#fff',
-    fontSize: 36,
-    fontWeight: '800',
-    height: 80,
-    lineHeight: 76,
-    textAlign: 'center',
-    width: 80,
-  },
-  container: { alignItems: 'center', backgroundColor: colors.background, flex: 1, justifyContent: 'center', padding: spacing.xl },
-  primaryButton: {
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: radius.md,
-    marginTop: spacing.lg,
-    paddingVertical: spacing.md,
-    width: '100%',
-  },
-  primaryButtonText: { color: '#fff', fontSize: 16, fontWeight: '800' },
-  row: { color: colors.muted, fontSize: 15, marginTop: spacing.sm },
-  secondaryButton: {
-    alignItems: 'center',
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    marginTop: spacing.sm,
-    paddingVertical: spacing.md,
-    width: '100%',
-  },
-  secondaryButtonText: { color: colors.text, fontSize: 15, fontWeight: '700' },
-  subtitle: { color: colors.muted, fontSize: 15, marginTop: spacing.sm, textAlign: 'center' },
-  title: { fontSize: 24, fontWeight: '800', marginTop: spacing.lg },
-});

@@ -5,7 +5,8 @@ import Header from '@/components/Header';
 import ProductCard from '@/components/ProductCard';
 import { categories, formatPrice, products } from '@/data/products';
 import { useRecentlyViewedStore } from '@/store/recentlyViewed';
-import { colors, radius, spacing } from '@/theme';
+import { radius, spacing } from '@/theme';
+import { useThemeColors } from '@/store/theme';
 
 type SortKey = 'popular' | 'priceAsc' | 'priceDesc';
 
@@ -16,6 +17,87 @@ const sortOptions: { key: SortKey; label: string }[] = [
 ];
 
 export default function HomeScreen() {
+  const colors = useThemeColors();
+  const styles = StyleSheet.create({
+  chips: { gap: spacing.sm, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm },
+  chip: {
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  chipText: { color: colors.text, fontSize: 13, fontWeight: '600' },
+  chipTextActive: { color: '#fff' },
+  clearButton: {
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  clearButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
+  container: { backgroundColor: colors.background, flex: 1 },
+  empty: { alignItems: 'center', flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
+  emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm, textAlign: 'center' },
+  emptyTitle: { color: colors.text, fontSize: 17, fontWeight: '700' },
+  hero: { backgroundColor: colors.primary, borderRadius: radius.xl, marginHorizontal: spacing.lg, marginTop: spacing.md, overflow: 'hidden', padding: spacing.lg },
+  heroButton: { alignSelf: 'flex-start', backgroundColor: '#fff', borderRadius: radius.pill, marginTop: spacing.md, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
+  heroButtonText: { color: colors.primary, fontSize: 13, fontWeight: '800' },
+  heroCircle: { backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 100, height: 160, position: 'absolute', right: -40, top: -60, width: 160 },
+  heroSubtitle: { color: '#E0E7FF', fontSize: 14, marginTop: 4 },
+  heroTag: { color: '#C7D2FE', fontSize: 11, fontWeight: '800', letterSpacing: 1.5 },
+  heroTitle: { color: '#fff', fontSize: 22, fontWeight: '800', marginTop: 4 },
+  list: { paddingBottom: 110, paddingHorizontal: spacing.lg },
+  listHeader: {
+    alignItems: 'baseline',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.sm,
+  },
+  recentCard: { backgroundColor: colors.card, borderColor: colors.border, borderRadius: radius.lg, borderWidth: 1, padding: spacing.sm, width: 120 },
+  recentImage: { borderRadius: radius.md, height: 80, width: '100%' },
+  recentList: { gap: spacing.md, paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
+  recentName: { color: colors.text, fontSize: 12, fontWeight: '700', marginTop: spacing.sm },
+  recentPrice: { color: colors.primary, fontSize: 12, fontWeight: '800', marginTop: 2 },
+  recentSection: { marginTop: spacing.md },
+  resultCount: { color: colors.muted, fontSize: 13, fontWeight: '600' },
+  row: { gap: spacing.md, justifyContent: 'space-between' },
+  search: { color: colors.text, flex: 1, fontSize: 15, paddingVertical: spacing.sm },
+  searchIcon: { color: colors.muted, fontSize: 20, marginRight: spacing.sm },
+  searchWrap: {
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    flexDirection: 'row',
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.md,
+    paddingHorizontal: spacing.md,
+    elevation: 2,
+    shadowColor: '#0F172A',
+    shadowOffset: { height: 1, width: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+  },
+  sectionTitle: { color: colors.text, fontSize: 18, fontWeight: '700', marginHorizontal: spacing.lg },
+  sortButton: {
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 6,
+  },
+  sortButtonActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  sortRow: { flexDirection: 'row', gap: spacing.sm, marginHorizontal: spacing.lg, marginTop: spacing.sm },
+  sortText: { color: colors.text, fontSize: 12, fontWeight: '600' },
+  sortTextActive: { color: '#fff' },
+});
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -177,84 +259,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  chips: { gap: spacing.sm, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm },
-  chip: {
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: 999,
-    borderWidth: 1,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  chipText: { color: colors.text, fontSize: 13, fontWeight: '600' },
-  chipTextActive: { color: '#fff' },
-  clearButton: {
-    backgroundColor: colors.primary,
-    borderRadius: radius.md,
-    marginTop: spacing.lg,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  clearButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  container: { backgroundColor: colors.background, flex: 1 },
-  empty: { alignItems: 'center', flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
-  emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm, textAlign: 'center' },
-  emptyTitle: { fontSize: 17, fontWeight: '700' },
-  hero: { backgroundColor: colors.primary, borderRadius: radius.xl, marginHorizontal: spacing.lg, marginTop: spacing.md, overflow: 'hidden', padding: spacing.lg },
-  heroButton: { alignSelf: 'flex-start', backgroundColor: '#fff', borderRadius: radius.pill, marginTop: spacing.md, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
-  heroButtonText: { color: colors.primary, fontSize: 13, fontWeight: '800' },
-  heroCircle: { backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 100, height: 160, position: 'absolute', right: -40, top: -60, width: 160 },
-  heroSubtitle: { color: '#E0E7FF', fontSize: 14, marginTop: 4 },
-  heroTag: { color: '#C7D2FE', fontSize: 11, fontWeight: '800', letterSpacing: 1.5 },
-  heroTitle: { color: '#fff', fontSize: 22, fontWeight: '800', marginTop: 4 },
-  list: { paddingBottom: 110, paddingHorizontal: spacing.lg },
-  listHeader: {
-    alignItems: 'baseline',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: spacing.lg,
-    marginTop: spacing.sm,
-  },
-  recentCard: { backgroundColor: colors.card, borderColor: colors.border, borderRadius: radius.lg, borderWidth: 1, padding: spacing.sm, width: 120 },
-  recentImage: { borderRadius: radius.md, height: 80, width: '100%' },
-  recentList: { gap: spacing.md, paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
-  recentName: { fontSize: 12, fontWeight: '700', marginTop: spacing.sm },
-  recentPrice: { color: colors.primary, fontSize: 12, fontWeight: '800', marginTop: 2 },
-  recentSection: { marginTop: spacing.md },
-  resultCount: { color: colors.muted, fontSize: 13, fontWeight: '600' },
-  row: { gap: spacing.md, justifyContent: 'space-between' },
-  search: { flex: 1, fontSize: 15, paddingVertical: spacing.sm },
-  searchIcon: { color: colors.muted, fontSize: 20, marginRight: spacing.sm },
-  searchWrap: {
-    alignItems: 'center',
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    flexDirection: 'row',
-    marginHorizontal: spacing.lg,
-    marginTop: spacing.md,
-    paddingHorizontal: spacing.md,
-    elevation: 2,
-    shadowColor: '#0F172A',
-    shadowOffset: { height: 1, width: 0 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-  },
-  sectionTitle: { fontSize: 18, fontWeight: '700', marginHorizontal: spacing.lg },
-  sortButton: {
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderRadius: radius.sm,
-    borderWidth: 1,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 6,
-  },
-  sortButtonActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  sortRow: { flexDirection: 'row', gap: spacing.sm, marginHorizontal: spacing.lg, marginTop: spacing.sm },
-  sortText: { color: colors.text, fontSize: 12, fontWeight: '600' },
-  sortTextActive: { color: '#fff' },
-});

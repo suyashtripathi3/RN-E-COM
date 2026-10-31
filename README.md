@@ -12,6 +12,7 @@ A React Native e-commerce app built with Expo, TypeScript, Expo Router, and Zust
 - **My Orders:** Orders created at checkout, listed in Profile with date, items, payment method and total, pull-to-refresh
 - **Bottom tab navigation:** Floating rounded tab bar with an active pill, filled icons when selected, and count badges for Cart and Wishlist
 - **Premium touches (2026-10-30):** Animated product cards that fade and slide in, a heart-pop animation, discount badges with strikethrough original prices, a Recently Viewed rail on Home, and a free-delivery progress bar in Cart
+- **Dark mode (2026-10-31):** Toggle in Profile → Appearance, saved on device with AsyncStorage and applied across Home, product detail, cart, wishlist, checkout, orders and the floating tab bar
 - **Product cards:** Rating badge on the photo, quick-add (+) button, and a wishlist heart on every card
 
 ## Tech stack

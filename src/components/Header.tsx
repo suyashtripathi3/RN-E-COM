@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, radius, spacing } from '@/theme';
+import { radius, spacing } from '@/theme';
+import { useThemeColors } from '@/store/theme';
 
 type Props = {
   subtitle?: string;
@@ -7,20 +8,8 @@ type Props = {
 };
 
 export default function Header({ subtitle, title }: Props) {
-  return (
-    <View style={styles.container}>
-      <View style={styles.logo}>
-        <Text style={styles.logoText}>R</Text>
-      </View>
-      <View style={styles.text}>
-        <Text style={styles.title}>{title}</Text>
-        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
-      </View>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
+  const colors = useThemeColors();
+  const styles = StyleSheet.create({
   container: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, paddingHorizontal: spacing.lg, paddingTop: 56 },
   logo: {
     alignItems: 'center',
@@ -35,3 +24,15 @@ const styles = StyleSheet.create({
   text: { flex: 1 },
   title: { color: colors.text, fontSize: 26, fontWeight: '900', letterSpacing: -0.5 },
 });
+  return (
+    <View style={styles.container}>
+      <View style={styles.logo}>
+        <Text style={styles.logoText}>R</Text>
+      </View>
+      <View style={styles.text}>
+        <Text style={styles.title}>{title}</Text>
+        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+      </View>
+    </View>
+  );
+}
