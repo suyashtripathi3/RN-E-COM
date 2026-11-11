@@ -13,6 +13,7 @@ A React Native e-commerce app built with Expo, TypeScript, Expo Router, and Zust
 - **Bottom tab navigation:** Floating rounded tab bar with an active pill, filled icons when selected, and count badges for Cart and Wishlist
 - **Premium touches (2026-10-30):** Animated product cards that fade and slide in, a heart-pop animation, discount badges with strikethrough original prices, a Recently Viewed rail on Home, and a free-delivery progress bar in Cart
 - **Dark mode (2026-10-31):** Toggle in Profile → Appearance, saved on device with AsyncStorage and applied across Home, product detail, cart, wishlist, checkout, orders and the floating tab bar
+- **Promo codes (2026-11-11):** Enter a code at checkout — WELCOME10 (10% off, min ₹499), SAVE100 (₹100 off, min ₹999), FESTIVE20 (20% off up to ₹500, min ₹1,999). Invalid codes and unmet minimums show a clear error, the discount appears in the order summary, and the code is saved on the order and shown in My Orders and on the order success screen
 - **Product cards:** Rating badge on the photo, quick-add (+) button, and a wishlist heart on every card
 
 ## Tech stack
@@ -72,6 +73,7 @@ app/
 src/
   components/          # Header, ProductCard (with wishlist heart)
   data/products.ts     # Dummy products (16 items)
+  data/coupons.ts      # Promo codes (WELCOME10, SAVE100, FESTIVE20)
   store/
     cart.ts            # Zustand cart store, persisted
     wishlist.ts        # Zustand wishlist store, persisted
@@ -93,4 +95,4 @@ eas.json               # EAS Build profiles (preview = APK)
 
 ## Daily improvements
 
-From 2026-10-30, this project gets a small, real improvement every day — a new feature, a UI polish, or a useful fix — pushed to GitHub daily. The roadmap for upcoming days includes dark mode, coupon codes, order tracking, product reviews, search history, and price filters, picked one at a time so each day's change stays focused and verified.
+From 2026-10-30, this project gets a small, real improvement every day — a new feature, a UI polish, or a useful fix — pushed to GitHub daily. The roadmap for upcoming days includes order tracking, product reviews, search history, and price filters, picked one at a time so each day's change stays focused and verified.

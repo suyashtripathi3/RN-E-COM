@@ -128,6 +128,12 @@ export default function ProfileScreen() {
               <Text style={styles.orderMeta} numberOfLines={2}>
                 {item.items.map((i) => i.product.name).join(', ')}
               </Text>
+              {item.couponCode ? (
+                <Text style={styles.orderMeta}>
+                  Promo {item.couponCode}
+                  {item.discount ? ` · saved ${formatPrice(item.discount)}` : ''}
+                </Text>
+              ) : null}
               <Text style={styles.orderTotal}>{formatPrice(item.total)}</Text>
             </View>
           )}

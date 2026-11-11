@@ -5,8 +5,10 @@ import type { CartItem } from '@/store/cart';
 
 export type Order = {
   address: string;
+  couponCode?: string;
   date: string;
   delivery: string;
+  discount?: number;
   id: string;
   items: CartItem[];
   payment: string;

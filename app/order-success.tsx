@@ -78,6 +78,14 @@ export default function OrderSuccessScreen() {
           <Text style={styles.row}>
             Total: <Text style={styles.bold}>{formatPrice(order.total)}</Text>
           </Text>
+          {order.couponCode && order.discount ? (
+            <Text style={styles.row}>
+              Promo {order.couponCode}:{' '}
+              <Text style={[styles.bold, { color: colors.success }]}>
+                you saved {formatPrice(order.discount)}
+              </Text>
+            </Text>
+          ) : null}
           <Text style={styles.row}>
             Payment: <Text style={styles.bold}>{order.payment}</Text>
           </Text>

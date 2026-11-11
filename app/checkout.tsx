@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 import { formatPrice } from '@/data/products';
+import { couponDiscount, validateCoupon, type Coupon } from '@/data/coupons';
 import { cartSubtotal, deliveryFee, useCartStore } from '@/store/cart';
 import { useOrdersStore } from '@/store/orders';
 import { radius, spacing } from '@/theme';
@@ -20,6 +21,30 @@ export default function CheckoutScreen() {
   backLink: { color: colors.primary, fontSize: 15, fontWeight: '700' },
   container: { backgroundColor: colors.background, flex: 1 },
   content: { padding: spacing.lg, paddingBottom: spacing.xl, paddingTop: 56 },
+  couponApplied: {
+    alignItems: 'center',
+    backgroundColor: colors.successSoft,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: spacing.sm,
+    padding: spacing.md,
+  },
+  couponAppliedText: { color: colors.success, fontSize: 14, fontWeight: '800' },
+  couponError: { color: colors.danger, fontSize: 13, fontWeight: '600', marginTop: spacing.sm },
+  couponHint: { color: colors.muted, fontSize: 12, marginTop: spacing.sm },
+  couponInput: { flex: 1 },
+  couponRow: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
+  couponButton: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  couponButtonText: { color: '#fff', fontSize: 14, fontWeight: '800' },
+  discountValue: { color: colors.success, fontSize: 14, fontWeight: '700' },
+  removeText: { color: colors.success, fontSize: 13, fontWeight: '800' },
   empty: { alignItems: 'center', backgroundColor: colors.background, flex: 1, justifyContent: 'center', paddingHorizontal: spacing.xl },
   emptySubtitle: { color: colors.muted, fontSize: 14, marginTop: spacing.sm },
   emptyTitle: { color: colors.text, fontSize: 20, fontWeight: '800' },
@@ -90,11 +115,31 @@ export default function CheckoutScreen() {
   const [delivery, setDelivery] = useState('standard');
   const [payment, setPayment] = useState('UPI');
   const [placing, setPlacing] = useState(false);
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [couponError, setCouponError] = useState('');
 
   const subtotal = cartSubtotal(items);
   const baseFee = deliveryFee(subtotal);
   const deliveryPrice = delivery === 'express' ? 99 : baseFee;
-  const total = subtotal + deliveryPrice;
+  const discount = appliedCoupon ? couponDiscount(appliedCoupon, subtotal) : 0;
+  const total = subtotal - discount + deliveryPrice;
+
+  const applyCoupon = () => {
+    const result = validateCoupon(couponInput, subtotal);
+    if ('error' in result) {
+      setCouponError(result.error);
+      return;
+    }
+    setAppliedCoupon(result.coupon);
+    setCouponError('');
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput('');
+    setCouponError('');
+  };
 
   const deliveryLabel = useMemo(
     () => deliveryOptions.find((o) => o.id === delivery)?.label ?? 'Standard delivery',
@@ -129,7 +174,9 @@ export default function CheckoutScreen() {
     setPlacing(true);
     const order = addOrder({
       address: `${name.trim()}, ${address.trim()}, ${city.trim()} — ${pincode.trim()}, Phone: ${phone.trim()}`,
+      couponCode: appliedCoupon?.code,
       delivery: deliveryLabel,
+      discount: discount > 0 ? discount : undefined,
       items,
       payment,
       total,
@@ -202,6 +249,38 @@ export default function CheckoutScreen() {
       </View>
       <Text style={styles.mockNote}>This is a demo checkout — no real payment is taken.</Text>
 
+      <Text style={styles.sectionTitle}>Promo code</Text>
+      {appliedCoupon ? (
+        <View style={styles.couponApplied}>
+          <Text style={styles.couponAppliedText}>
+            {appliedCoupon.code} applied · −{formatPrice(discount)}
+          </Text>
+          <TouchableOpacity onPress={removeCoupon}>
+            <Text style={styles.removeText}>Remove</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <>
+          <View style={styles.couponRow}>
+            <TextInput
+              style={[styles.input, styles.couponInput, { marginTop: 0 }]}
+              placeholder="Enter promo code"
+              value={couponInput}
+              onChangeText={(value) => {
+                setCouponInput(value);
+                setCouponError('');
+              }}
+              autoCapitalize="characters"
+            />
+            <TouchableOpacity style={styles.couponButton} onPress={applyCoupon}>
+              <Text style={styles.couponButtonText}>Apply</Text>
+            </TouchableOpacity>
+          </View>
+          {couponError ? <Text style={styles.couponError}>{couponError}</Text> : null}
+          <Text style={styles.couponHint}>Try WELCOME10, SAVE100 or FESTIVE20.</Text>
+        </>
+      )}
+
       <Text style={styles.sectionTitle}>Order summary</Text>
       <View style={styles.summary}>
         {items.map((item) => (
@@ -216,6 +295,12 @@ export default function CheckoutScreen() {
           <Text style={styles.summaryLabel}>Subtotal</Text>
           <Text style={styles.summaryValue}>{formatPrice(subtotal)}</Text>
         </View>
+        {discount > 0 && appliedCoupon ? (
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Promo ({appliedCoupon.code})</Text>
+            <Text style={styles.discountValue}>−{formatPrice(discount)}</Text>
+          </View>
+        ) : null}
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Delivery</Text>
           <Text style={styles.summaryValue}>{deliveryPrice === 0 ? 'Free' : formatPrice(deliveryPrice)}</Text>
