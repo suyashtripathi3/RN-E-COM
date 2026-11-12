@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 import { formatPrice } from '@/data/products';
+import { getOrderStatus } from '@/store/orders';
+import OrderTracker from '@/components/OrderTracker';
 import { useOrdersStore } from '@/store/orders';
 import { radius, spacing } from '@/theme';
 import { useThemeColors, useThemeStore } from '@/store/theme';
@@ -69,6 +71,12 @@ export default function ProfileScreen() {
   const mode = useThemeStore((state) => state.mode);
   const toggleTheme = useThemeStore((state) => state.toggle);
   const [refreshing, setRefreshing] = useState(false);
+  // Re-render every 30s so live tracking statuses advance while viewing.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 30000);
+    return () => clearInterval(timer);
+  }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -114,11 +122,13 @@ export default function ProfileScreen() {
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-          renderItem={({ item }) => (
+          renderItem={({ item }) => {
+            const status = getOrderStatus(item, now);
+            return (
             <View style={styles.orderCard}>
               <View style={styles.orderHeader}>
                 <Text style={styles.orderId}>{item.id}</Text>
-                <Text style={styles.status}>{item.status}</Text>
+                <Text style={[styles.status, { color: status === 'Delivered' ? colors.success : colors.primary }]}>{status}</Text>
               </View>
               <Text style={styles.orderMeta}>
                 {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -135,8 +145,10 @@ export default function ProfileScreen() {
                 </Text>
               ) : null}
               <Text style={styles.orderTotal}>{formatPrice(item.total)}</Text>
+              <OrderTracker now={now} order={item} />
             </View>
-          )}
+            );
+          }}
         />
       )}
     </View>

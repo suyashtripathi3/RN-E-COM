@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { formatPrice } from '@/data/products';
-import { useOrdersStore } from '@/store/orders';
+import { getEstimatedDelivery, useOrdersStore } from '@/store/orders';
 import { radius, spacing } from '@/theme';
 import { useThemeColors } from '@/store/theme';
 
@@ -58,11 +58,13 @@ export default function OrderSuccessScreen() {
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
   const order = useOrdersStore((state) => state.orders.find((o) => o.id === orderId));
 
-  const deliveryDate = new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', {
-    day: 'numeric',
-    month: 'long',
-    weekday: 'long',
-  });
+  const deliveryDate = order
+    ? getEstimatedDelivery(order).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'long',
+        weekday: 'long',
+      })
+    : '';
 
   return (
     <View style={styles.container}>
@@ -94,6 +96,9 @@ export default function OrderSuccessScreen() {
           </Text>
           <Text style={styles.row}>
             Arriving by: <Text style={styles.bold}>{deliveryDate}</Text>
+          </Text>
+          <Text style={styles.row}>
+            Tracking: <Text style={[styles.bold, { color: colors.primary }]}>live in My Orders</Text>
           </Text>
           <Text style={styles.row}>
             Items: <Text style={styles.bold}>{order.items.reduce((n, i) => n + i.quantity, 0)}</Text>
